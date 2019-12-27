@@ -8,7 +8,8 @@ import {
   TextInput,
   Image,
   ScrollView,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  TouchableHighlight
 } from "react-native";
 import { Carousel } from "react-native-snap-carousel";
 
@@ -183,10 +184,30 @@ class App extends Component {
     var arr = [];
 
     arr.push(
-      <View>
+      <View
+        style={{
+          paddingVertical: 8,
+          paddingHorizontal: 30
+        }}
+      >
         <Text>
-          O que você possui no cômodo
-          <Text style={{ fontSize: 20 }}>{" " + item.room}?</Text>
+          <h2
+            style={{
+              fontSize: 24,
+              fontWeight: "500",
+              margin: 0,
+              padding: 0
+            }}
+          >
+            O que você possui no cômodo
+            <span
+              style={{
+                fontWeight: "bold"
+              }}
+            >
+              {" " + item.room}?
+            </span>
+          </h2>
         </Text>
       </View>
     );
@@ -198,60 +219,152 @@ class App extends Component {
     var self = this;
 
     if (!room || !room.forniture || room.forniture.length === 0) {
-      arr.push(<Text>Nenhum item para exibir</Text>);
+      arr.push(
+        <Text>
+          <h2>Nenhum item para exibir</h2>
+        </Text>
+      );
       return arr;
     }
 
     arr.push(
-      <Picker
-        style={{ height: 50, width: "100%" }}
-        onValueChange={(value, itemIndex) => {
-          self.setState({
-            currentForniture: room.forniture[itemIndex],
-            currentDimensions: room.forniture[itemIndex].dimensions,
-            currentSelectedDimension: room.forniture[itemIndex].dimensions[0]
-          });
+      <View
+        style={{
+          marginTop: 18,
+          marginBottom: 12,
+          paddingHorizontal: 24
         }}
       >
-        {room.forniture &&
-          room.forniture.map((itemf, rowf) => {
-            return <Picker.Item key={rowf} label={itemf.name} />;
-          })}
-      </Picker>
+        <Picker
+          style={{
+            height: 54,
+            width: "100%",
+            paddingHorizontal: 12
+          }}
+          onValueChange={(value, itemIndex) => {
+            self.setState({
+              currentForniture: room.forniture[itemIndex],
+              currentDimensions: room.forniture[itemIndex].dimensions,
+              currentSelectedDimension: room.forniture[itemIndex].dimensions[0]
+            });
+          }}
+        >
+          {room.forniture &&
+            room.forniture.map((itemf, rowf) => {
+              return <Picker.Item key={rowf} label={itemf.name} />;
+            })}
+        </Picker>
+      </View>
     );
 
     // subitem
     arr.push(
-      <Picker
-        style={{ height: 50, width: "100%" }}
-        onValueChange={(value, itemIndex) => {
-          //change currentDimension
-          self.setState({
-            currentSelectedDimension: this.state.currentDimensions[itemIndex]
-          });
+      <View
+        style={{
+          marginBottom: 24,
+          paddingHorizontal: 24
         }}
       >
-        {self.state.currentDimensions &&
-          self.state.currentDimensions.map((itemf, rowf) => {
-            return <Picker.Item label={itemf.name} />;
-          })}
-      </Picker>
-    );
+        <Picker
+          style={{
+            height: 54,
+            width: "100%",
+            paddingHorizontal: 12
+          }}
+          onValueChange={(value, itemIndex) => {
+            //change currentDimension
+            self.setState({
+              currentSelectedDimension: this.state.currentDimensions[itemIndex]
+            });
+          }}
+        >
+          {self.state.currentDimensions &&
+            self.state.currentDimensions.map((itemf, rowf) => {
+              return <Picker.Item label={itemf.name} />;
+            })}
+        </Picker>
 
-    arr.push(<Button title="Adicionar" onPress={() => this.addItem()} />);
+        <TouchableHighlight
+          onPress={() => {
+            this.addItem();
+          }}
+          style={{
+            marginHorizontal: 10
+          }}
+        >
+          <View
+            style={{
+              width: "100%",
+              marginTop: 24,
+              borderRadius: 4,
+              paddingVertical: 16,
+              textAlign: "center",
+              borderColor: "transparent",
+              backgroundColor: "rgb(33, 150, 243)"
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 14,
+                color: "#ffffff",
+                textTransform: "uppercase"
+              }}
+            >
+              Adicionar
+            </Text>
+          </View>
+        </TouchableHighlight>
+      </View>
+    );
 
     //customizado
     arr.push(
-      <View>
+      <View
+        style={{
+          paddingVertical: 48
+        }}
+      >
         <Text style={{ textAlign: "center" }}>
-          <h3>Algum item que não está listado? Informe abaixo:</h3>
+          <h3
+            style={{
+              fontWeight: "500",
+              color: "#858585",
+              margin: 0,
+              padding: 0,
+              marginBottom: 12
+            }}
+          >
+            Algum item que não está listado?
+            <span
+              style={{
+                fontWeight: "bold",
+                color: "#000000"
+              }}
+            >
+              {" "}
+              Informe abaixo:
+            </span>
+          </h3>
         </Text>
 
-        <View>
+        <View
+          style={{
+            paddingVertical: 12,
+            paddingHorizontal: 30
+          }}
+        >
           <TextInput
             ref={this._customerName}
             value={this.state.currentCustom._customerName}
             placeholder="Nome do Item"
+            style={{
+              fontSize: 16,
+              textAlign: "center",
+              paddingVertical: 18,
+              paddingHorizontal: 8,
+              borderRadius: 4,
+              border: "2px solid #eeeeee"
+            }}
             onChangeText={value => {
               var currentCustom = this.state.currentCustom;
               currentCustom.name = value;
@@ -266,7 +379,7 @@ class App extends Component {
             flexDirection: "row",
             justifyContent: "space-between",
 
-            paddingVertical: 24,
+            paddingVertical: 8,
             paddingHorizontal: 30
           }}
         >
@@ -275,11 +388,12 @@ class App extends Component {
             value={this.state.currentCustom._x}
             placeholder="Medida x"
             style={{
+              fontSize: 16,
               textAlign: "center",
               paddingVertical: 18,
-              paddingHorizontal: 12,
+              paddingHorizontal: 8,
               borderRadius: 4,
-              border: "2px solid #dddddd"
+              border: "2px solid #eeeeee"
             }}
             onChangeText={value => {
               var currentCustom = this.state.currentCustom;
@@ -292,11 +406,12 @@ class App extends Component {
             value={this.state.currentCustom._y}
             placeholder="Medida y"
             style={{
+              fontSize: 16,
               textAlign: "center",
               paddingVertical: 18,
-              paddingHorizontal: 12,
+              paddingHorizontal: 8,
               borderRadius: 4,
-              border: "2px solid #dddddd"
+              border: "2px solid #eeeeee"
             }}
             onChangeText={value => {
               var currentCustom = this.state.currentCustom;
@@ -309,11 +424,12 @@ class App extends Component {
             value={this.state.currentCustom._z}
             placeholder="Medida z"
             style={{
+              fontSize: 16,
               textAlign: "center",
               paddingVertical: 18,
-              paddingHorizontal: 12,
+              paddingHorizontal: 8,
               borderRadius: 4,
-              border: "2px solid #dddddd"
+              border: "2px solid #eeeeee"
             }}
             onChangeText={value => {
               var currentCustom = this.state.currentCustom;
@@ -322,10 +438,39 @@ class App extends Component {
             }}
           />
         </View>
+
+        <View
+          style={{
+            marginTop: 24,
+            paddingHorizontal: 30
+          }}
+        >
+          <TouchableHighlight
+            style={{
+              width: "100%",
+              borderRadius: 4,
+              textAlign: "center",
+              paddingVertical: 16,
+              borderColor: "transparent",
+              backgroundColor: "rgb(33, 150, 243)"
+            }}
+            onPress={() => this.addItemCustom()}
+          >
+            <View>
+              <Text
+                style={{
+                  fontSize: 14,
+                  color: "#ffffff",
+                  textTransform: "uppercase"
+                }}
+              >
+                Adicionar Item
+              </Text>
+            </View>
+          </TouchableHighlight>
+        </View>
       </View>
     );
-
-    arr.push(<Button title="+" onPress={() => this.addItemCustom()} />);
 
     return arr;
   };
@@ -466,21 +611,19 @@ class App extends Component {
                     </Text>
                   </View>
                   <View>
-                    <Image
-                      style={{ width: 54, height: 54 }}
-                      source={{
-                        uri:
-                          "https://facebook.github.io/react-native/img/tiny_logo.png"
-                      }}
-                    />
+                    <TouchableHighlight onPress={() => this.addItemPhoto}>
+                      <Image
+                        style={{ width: 54, height: 54 }}
+                        source={{
+                          uri:
+                            "https://facebook.github.io/react-native/img/tiny_logo.png"
+                        }}
+                      />
+                    </TouchableHighlight>
                     <View>
                       <Button
                         title="-"
                         onPress={() => this.removeAddedItem(item)}
-                      />
-                      <Button
-                        title="photo"
-                        onPress={() => this.addItemPhoto()}
                       />
                     </View>
                   </View>
