@@ -25,38 +25,39 @@ class App extends Component {
 
     var rooms = [
       {
-        showSubCombo: false,
         room: "Quarto",
-        width: 140,
         img:
           "https://firebasestorage.googleapis.com/v0/b/moveoutapp-e23b7.appspot.com/o/svg-furniture%2Fstove.svg?alt=media&token=7b523bc4-9c58-4e20-afa0-de9baffad7fa",
         key: "quarto",
-        qtty: 0,
         forniture: [
           {
-            name: "Cama Solteiro",
-            key: "quarto.sofa",
+            name: "Cama",
+            key: "quarto.cama",
             dimensions: [
               {
-                name: "3 lugares",
-                measure: { x: 120, y: 140, z: 160 }
+                name: "Colchão de solteiro",
+                measure: { x: 88, y: 188, z: 0 }
               },
               {
-                name: "Cama Casal",
-                measure: { x: 120, y: 140, z: 160 }
+                name: "Colchão de viúva",
+                measure: { x: 128, y: 188, z: 0 }
+              },
+              {
+                name: "Colchão de casal",
+                measure: { x: 138, y: 188, z: 0 }
               }
             ]
           },
           {
-            name: "Mesa",
+            name: "Armário",
             key: "quarto.mesa",
             dimensions: [
               {
-                name: "4 cadeiras",
+                name: "Solteiro",
                 measure: { x: 120, y: 140, z: 160 }
               },
               {
-                name: "6 cadeiras",
+                name: "Casal",
                 measure: { x: 120, y: 140, z: 160 }
               }
             ]
@@ -72,7 +73,7 @@ class App extends Component {
         qtty: 0,
         forniture: [
           {
-            name: "Meta",
+            name: "Mesa",
             key: "quarto.sofa",
             dimensions: [
               {
