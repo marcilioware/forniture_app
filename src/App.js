@@ -8,7 +8,10 @@ import {
   TextInput,
   Image,
   ScrollView,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  TouchableHighlight,
+  TouchableNativeFeedback,
+  TouchableWithoutFeedback
 } from "react-native";
 import { Carousel } from "react-native-snap-carousel";
 
@@ -184,10 +187,44 @@ class App extends Component {
 
     arr.push(
       <View>
-        <Text>
-          O que você possui no cômodo
-          <Text style={{ fontSize: 20 }}>{" " + item.room}?</Text>
-        </Text>
+        <View style={{ paddingHorizontal: 24, marginVertical: 2.4 + "em" }}>
+          <Text
+            style={{
+              paddingBottom: 6,
+              paddingHorizontal: 8,
+              fontWeight: "bold"
+            }}
+          >
+            Escolha o cômodo:
+          </Text>
+          <Picker
+            style={{
+              height: 54,
+              paddingHorizontal: 12
+            }}
+          >
+            <Picker.Item label="Quarto" value="Quarto" />
+          </Picker>
+        </View>
+        <View style={{ paddingHorizontal: 30 }}>
+          <Text>
+            <h2
+              style={{
+                fontSize: 24,
+                fontWeight: 400,
+                color: "#858585",
+                margin: 0,
+                padding: 0
+              }}
+            >
+              O que você possui no cômodo
+              <span style={{ fontWeight: "bold", color: "#323232" }}>
+                {" " + item.room}
+              </span>
+              ?
+            </h2>
+          </Text>
+        </View>
       </View>
     );
     return arr;
@@ -198,135 +235,93 @@ class App extends Component {
     var self = this;
 
     if (!room || !room.forniture || room.forniture.length === 0) {
-      arr.push(<Text>Nenhum item para exibir</Text>);
+      arr.push(
+        <Text>
+          <h2>Nenhum item para exibir</h2>
+        </Text>
+      );
       return arr;
     }
 
     arr.push(
-      <Picker
-        style={{ height: 50, width: "100%" }}
-        onValueChange={(value, itemIndex) => {
-          self.setState({
-            currentForniture: room.forniture[itemIndex],
-            currentDimensions: room.forniture[itemIndex].dimensions,
-            currentSelectedDimension: room.forniture[itemIndex].dimensions[0]
-          });
+      <View
+        style={{
+          marginTop: 18,
+          paddingHorizontal: 24
         }}
       >
-        {room.forniture &&
-          room.forniture.map((itemf, rowf) => {
-            return <Picker.Item key={rowf} label={itemf.name} />;
-          })}
-      </Picker>
-    );
-
-    // subitem
-    arr.push(
-      <Picker
-        style={{ height: 50, width: "100%" }}
-        onValueChange={(value, itemIndex) => {
-          //change currentDimension
-          self.setState({
-            currentSelectedDimension: this.state.currentDimensions[itemIndex]
-          });
-        }}
-      >
-        {self.state.currentDimensions &&
-          self.state.currentDimensions.map((itemf, rowf) => {
-            return <Picker.Item label={itemf.name} />;
-          })}
-      </Picker>
-    );
-
-    arr.push(<Button title="Adicionar" onPress={() => this.addItem()} />);
-
-    //customizado
-    arr.push(
-      <View>
-        <Text style={{ textAlign: "center" }}>
-          <h3>Algum item que não está listado? Informe abaixo:</h3>
-        </Text>
-
-        <View>
-          <TextInput
-            ref={this._customerName}
-            value={this.state.currentCustom._customerName}
-            placeholder="Nome do Item"
-            onChangeText={value => {
-              var currentCustom = this.state.currentCustom;
-              currentCustom.name = value;
-              this.setState({ currentCustom: currentCustom });
-            }}
-          />
-        </View>
-
         <View
           style={{
-            display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
-
-            paddingVertical: 24,
-            paddingHorizontal: 30
+            display: "grid",
+            gridGap: 30,
+            gridTemplateColumns: "1fr 1fr"
           }}
         >
-          <TextInput
-            ref={this._x}
-            value={this.state.currentCustom._x}
-            placeholder="Medida x"
+          <Picker
             style={{
-              textAlign: "center",
-              paddingVertical: 18,
-              paddingHorizontal: 12,
-              borderRadius: 4,
-              border: "2px solid #dddddd"
+              height: 54,
+              paddingHorizontal: 12
             }}
-            onChangeText={value => {
-              var currentCustom = this.state.currentCustom;
-              currentCustom._x = value;
-              this.setState({ currentCustom: currentCustom });
+            onValueChange={(value, itemIndex) => {
+              self.setState({
+                currentForniture: room.forniture[itemIndex],
+                currentDimensions: room.forniture[itemIndex].dimensions,
+                currentSelectedDimension:
+                  room.forniture[itemIndex].dimensions[0]
+              });
             }}
-          />
-          <TextInput
-            ref={this._y}
-            value={this.state.currentCustom._y}
-            placeholder="Medida y"
+          >
+            {room.forniture &&
+              room.forniture.map((itemf, rowf) => {
+                return <Picker.Item key={rowf} label={itemf.name} />;
+              })}
+          </Picker>
+
+          <Picker
             style={{
-              textAlign: "center",
-              paddingVertical: 18,
-              paddingHorizontal: 12,
-              borderRadius: 4,
-              border: "2px solid #dddddd"
+              height: 54,
+              paddingHorizontal: 12
             }}
-            onChangeText={value => {
-              var currentCustom = this.state.currentCustom;
-              currentCustom._y = value;
-              this.setState({ currentCustom: currentCustom });
+            onValueChange={(value, itemIndex) => {
+              //change currentDimension
+              self.setState({
+                currentSelectedDimension: this.state.currentDimensions[
+                  itemIndex
+                ]
+              });
             }}
-          />
-          <TextInput
-            ref={this._z}
-            value={this.state.currentCustom._z}
-            placeholder="Medida z"
-            style={{
-              textAlign: "center",
-              paddingVertical: 18,
-              paddingHorizontal: 12,
-              borderRadius: 4,
-              border: "2px solid #dddddd"
-            }}
-            onChangeText={value => {
-              var currentCustom = this.state.currentCustom;
-              currentCustom._z = value;
-              this.setState({ currentCustom: currentCustom });
-            }}
-          />
+          >
+            {self.state.currentDimensions &&
+              self.state.currentDimensions.map((itemf, rowf) => {
+                return <Picker.Item label={itemf.name} />;
+              })}
+          </Picker>
         </View>
       </View>
     );
 
-    arr.push(<Button title="+" onPress={() => this.addItemCustom()} />);
+    // subitem
+    arr.push(
+      <View
+        style={{
+          paddingHorizontal: 30,
 
+          marginTop: 1.2 + "em",
+          marginBottom: 2.4 + "em"
+        }}
+      >
+        <TouchableWithoutFeedback
+          onPress={() => {
+            this.addItem();
+          }}
+          style={{ width: "100%", borderColor: "transparent" }}
+        >
+          <View style={styles.buttonCustom}>
+            <Text style={styles.buttonCustomText}>Adicionar</Text>
+          </View>
+        </TouchableWithoutFeedback>
+      </View>
+    );
     return arr;
   };
 
@@ -359,15 +354,30 @@ class App extends Component {
     var arrButton = [];
     if (this.state.currentRoomIndex === this.state.rooms.length - 1) {
       arrButton.push(
-        <Button
-          title={"ir para " + this.state.rooms[0].room}
-          onPress={this.actionNext}
-        />
+        <View
+          style={{
+            paddingHorizontal: 30
+          }}
+        >
+          <Button
+            title={"ir para " + this.state.rooms[0].room}
+            onPress={this.actionNext}
+          />
+        </View>
       );
     } else {
       var nextroom = this.state.rooms[this.state.currentRoomIndex + 1];
       arrButton.push(
-        <Button title={"ir para " + nextroom.room} onPress={this.actionNext} />
+        <View
+          style={{
+            paddingHorizontal: 30
+          }}
+        >
+          <Button
+            title={"ir para " + nextroom.room}
+            onPress={this.actionNext}
+          />
+        </View>
       );
     }
 
@@ -447,6 +457,146 @@ class App extends Component {
     });
   };
 
+  _itemCustomProps = () => {
+    var arr = [];
+
+    arr.push(
+      <View
+        style={{
+          paddingVertical: 48
+        }}
+      >
+        <Text style={{ textAlign: "center" }}>
+          <h3
+            style={{
+              fontWeight: "500",
+              color: "#858585",
+              margin: 0,
+              padding: 0,
+              marginBottom: 12
+            }}
+          >
+            Algum item que não está listado?
+            <span
+              style={{
+                fontWeight: "bold",
+                color: "#000000"
+              }}
+            >
+              {" "}
+              Informe abaixo:
+            </span>
+          </h3>
+        </Text>
+
+        <View
+          style={{
+            paddingVertical: 12,
+            paddingHorizontal: 30
+          }}
+        >
+          <TextInput
+            ref={this._customerName}
+            value={this.state.currentCustom._customerName}
+            placeholder="Nome do Item"
+            style={{
+              fontSize: 16,
+              textAlign: "center",
+              paddingVertical: 18,
+              paddingHorizontal: 8,
+              borderRadius: 4,
+              border: "2px solid #eeeeee"
+            }}
+            onChangeText={value => {
+              var currentCustom = this.state.currentCustom;
+              currentCustom.name = value;
+              this.setState({ currentCustom: currentCustom });
+            }}
+          />
+        </View>
+
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+
+            paddingVertical: 8,
+            paddingHorizontal: 30
+          }}
+        >
+          <TextInput
+            ref={this._x}
+            value={this.state.currentCustom._x}
+            placeholder="Medida x"
+            style={{
+              fontSize: 16,
+              textAlign: "center",
+              paddingVertical: 18,
+              paddingHorizontal: 8,
+              borderRadius: 4,
+              border: "2px solid #eeeeee"
+            }}
+            onChangeText={value => {
+              var currentCustom = this.state.currentCustom;
+              currentCustom._x = value;
+              this.setState({ currentCustom: currentCustom });
+            }}
+          />
+          <TextInput
+            ref={this._y}
+            value={this.state.currentCustom._y}
+            placeholder="Medida y"
+            style={{
+              fontSize: 16,
+              textAlign: "center",
+              paddingVertical: 8,
+              paddingHorizontal: 8,
+              borderRadius: 4,
+              border: "2px solid #eeeeee"
+            }}
+            onChangeText={value => {
+              var currentCustom = this.state.currentCustom;
+              currentCustom._y = value;
+              this.setState({ currentCustom: currentCustom });
+            }}
+          />
+          <TextInput
+            ref={this._z}
+            value={this.state.currentCustom._z}
+            placeholder="Medida z"
+            style={{
+              fontSize: 16,
+              textAlign: "center",
+              paddingVertical: 8,
+              paddingHorizontal: 8,
+              borderRadius: 4,
+              border: "2px solid #eeeeee"
+            }}
+            onChangeText={value => {
+              var currentCustom = this.state.currentCustom;
+              currentCustom._z = value;
+              this.setState({ currentCustom: currentCustom });
+            }}
+          />
+        </View>
+
+        <View style={{ marginTop: 24, paddingHorizontal: 30 }}>
+          <TouchableHighlight
+            style={styles.buttonCustom}
+            onPress={() => this.addItemCustom()}
+          >
+            <View>
+              <Text style={styles.buttonCustomText}>Adicionar Item</Text>
+            </View>
+          </TouchableHighlight>
+        </View>
+      </View>
+    );
+
+    return arr;
+  };
+
   render() {
     return (
       <KeyboardAvoidingView style={styles.container} behavior="padding" enabled>
@@ -457,32 +607,75 @@ class App extends Component {
         {this.state.addedItems.map(item => {
           if (item.room.key === this.state.currentRoom.key)
             return (
-              <ScrollView>
-                <View style={{ flex: 1, flexDirection: "row" }}>
-                  <br />
-                  <View>
-                    <Text>
-                      {item.forniture.name + " - " + item.dimension.name}
+              <ScrollView
+                style={{
+                  marginTop: 0.2 + "em",
+                  marginBottom: 1 + "em",
+                  paddingHorizontal: 30
+                }}
+              >
+                <View
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr 8em",
+
+                    alignItems: "center",
+                    justifyContent: "space-between",
+
+                    paddingBottom: 1 + "em",
+                    borderBottom: "1px solid #efefef"
+                  }}
+                >
+                  <View
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "flex-start",
+                      flexDirection: "row"
+                    }}
+                  >
+                    <TouchableWithoutFeedback
+                      style={{
+                        border: "none"
+                      }}
+                      onPress={() => this.addItemPhoto}
+                    >
+                      <Image
+                        style={{ width: 54, height: 54 }}
+                        source={{
+                          uri:
+                            "https://facebook.github.io/react-native/img/tiny_logo.png"
+                        }}
+                      />
+                    </TouchableWithoutFeedback>
+
+                    <Text style={{ marginLeft: 1 + "em" }}>
+                      <h5 style={{ margin: 0, padding: 0 }}>Item:</h5>
+                      <p style={{ margin: 0, padding: 0 }}>
+                        {item.forniture.name + " - " + item.dimension.name}
+                      </p>
                     </Text>
                   </View>
-                  <View>
-                    <Image
-                      style={{ width: 54, height: 54 }}
-                      source={{
-                        uri:
-                          "https://facebook.github.io/react-native/img/tiny_logo.png"
+
+                  <View
+                    style={{
+                      width: 8 + "em",
+                      textAlign: "center"
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: "rgb(33, 150, 243)",
+                        fontWeight: "bold",
+
+                        borderRadius: 4,
+                        paddingVertical: 0.8 + "em",
+                        border: "1px solid rgb(33, 150, 243)"
                       }}
-                    />
-                    <View>
-                      <Button
-                        title="-"
-                        onPress={() => this.removeAddedItem(item)}
-                      />
-                      <Button
-                        title="photo"
-                        onPress={() => this.addItemPhoto()}
-                      />
-                    </View>
+                      onPress={() => this.removeAddedItem(item)}
+                    >
+                      Remover
+                    </Text>
                   </View>
                 </View>
               </ScrollView>
@@ -490,7 +683,9 @@ class App extends Component {
           else return null;
         })}
 
-        <View>{this._nextRoomButton()}</View>
+        {/* {this._itemCustomProps(this.state.currentRoom)} */}
+
+        {/* <View>{this._nextRoomButton()}</View> */}
       </KeyboardAvoidingView>
     );
   }
@@ -524,6 +719,22 @@ const styles = StyleSheet.create({
   },
   code: {
     fontFamily: "monospace, monospace"
+  },
+
+  buttonCustom: {
+    textAlign: "center",
+
+    width: "100%",
+    borderRadius: 4,
+    paddingVertical: 16,
+    borderColor: "transparent",
+    backgroundColor: "rgb(33, 150, 243)"
+  },
+
+  buttonCustomText: {
+    fontSize: 14,
+    color: "#ffffff",
+    textTransform: "uppercase"
   }
 });
 
